@@ -6,7 +6,7 @@
 MyPackage := new Package()
 MyPackage.LoadUrl("http://aspdm.2fh.co/dl_file.php?f=gdip.ahkp")
 ;MyPackage.LoadFile(".\gdip.ahkp")
-MyPackage.ExtractTreeObj(Tree)
+Tree := MyPackage.ExtractTree()
 Gdip := MyPackage.ExtractFile(Tree["Lib", "Gdip_All.ahk"])
 Script := MyPackage.ExtractFile(Tree["Gdip.Tutorial.9-Create.a.progress.bar.on.standard.gui.ahk"])
 Exec := ExecScript(Gdip "`n" Script)
