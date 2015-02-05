@@ -1,5 +1,6 @@
 #NoEnv
 
+#Include Lib\JSON.ahk
 #Include Lib\Package.ahk
 #Include Lib\ExecScript.ahk
 
