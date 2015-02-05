@@ -1,8 +1,11 @@
 #NoEnv
+SetBatchLines, -1
+SetWorkingDir, %A_ScriptDir%
 
-#Include Lib\JSON.ahk
-#Include Lib\Package.ahk
-#Include Lib\ExecScript.ahk
+#Include %A_ScriptDir%\Lib
+#Include JSON.ahk
+#Include Package.ahk
+#Include ExecScript.ahk
 
 ; --- Download extract and run gdip example without temporary files ---
 MyPackage := new Package()
