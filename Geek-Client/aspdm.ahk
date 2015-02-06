@@ -3,11 +3,14 @@ SetBatchLines, -1
 SetWorkingDir, %A_ScriptDir%
 
 #Include %A_ScriptDir%\Lib
+#Include API.ahk
 #Include JSON.ahk
 #Include Package.ahk
 #Include ExecScript.ahk
 
-Packages := GetPackages()
+MyAPI := new API("http://api-php.aspdm.2fh.co/")
+Packages := MyAPI.GetPackageList()
+
 
 Gui, Main:New
 Gui, Add, ListView, w600 h250 gPackageList, Name|Author|Version|Branch|Package Name
@@ -32,10 +35,11 @@ if (A_GuiEvent == "DoubleClick")
 return
 
 MakePackageWindow:
-PackageMetadata := GetPackageMetadata(PackageName)
+PackageMetadata := MyAPI.GetPackageMetadata(PackageName)
+Description := PackageMetadata.Remove("Description")
 Gui, Package:New, +OwnerMain
 Gui, Add, ListView, w600 h250 gPackageDetailList, Key|Value
-Gui, Add, Edit, ReadOnly w600 h250, % PackageMetadata.Remove("Description")
+Gui, Add, Edit, ReadOnly w600 h250, % Description ? Description : "No description"
 for k,v in PackageMetadata
 	if !IsObject(v)
 		LV_Add("", k, v)
@@ -50,35 +54,6 @@ return
 
 PackageDetailList:
 return
-
-GetPackages()
-{
-	static PackageListingAPI := "http://api-php.aspdm.2fh.co/list.php?full"
-	return UrlDownloadToObj(PackageListingAPI)
-}
-
-GetPackageMetadata(PackageName)
-{
-	static PackageDetailsAPI := "http://api-php.aspdm.2fh.co/info.php?f="
-	return UrlDownloadToObj(PackageDetailsAPI . PackageName)
-}
-
-UrlDownloadToObj(Url)
-{
-	return Json_ToObj(UrlDownloadToVar(Url))
-}
-
-UrlDownloadToVar(Url)
-{
-	try
-	{
-		Http := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-		Http.Open("GET", Url, false), Http.Send()
-		return Http.ResponseText
-	}
-	catch
-		throw Exception("There was a problem accessing " Url)
-}
 
 /*
 	;--- Download extract and run gdip example without temporary files ---
