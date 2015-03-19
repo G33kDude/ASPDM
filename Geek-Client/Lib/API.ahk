@@ -5,6 +5,11 @@
 		this.BaseUrl := RegExReplace(BaseUrl, "/$")
 	}
 	
+	GetPackageUrl()
+	{
+		return this.
+	}
+	
 	GetPackageList()
 	{
 		return this.GetJson("list.php", {"full": ""})
@@ -22,20 +27,27 @@
 	
 	Get(Page, Params)
 	{
-		for Name, Value in Params
-			Query .= "&" UriEncode(Name) "=" UriEncode(Value)
-		Query := Query ? ("?" SubStr(query, 2)) : ""
+		Url := this.MakeUrl(Page, Params)
 		try
 		{
 			; Make a new object every time. It's slower but (probably) more thread safe.
 			; Another solution would be to use Critical
 			Http := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-			Http.Open("GET", this.BaseUrl "/" Page . Query, false)
-			Http.Send()
+			Http.Open("GET", Url, false), Http.Send()
 			return Http.ResponseText
 		}
 		catch
 			throw Exception("There was a problem accessing " Url)
+	}
+	
+	MakeUrl(Page, Params)
+	{
+		for Name, Value in Params
+			Query .= "&" UriEncode(Name) "=" UriEncode(Value)
+		if Query
+			return this.BaseUrl "/" Page "?" SubStr(query, 2)
+		else
+			return this.BaseUrl "/" Page
 	}
 }
 
